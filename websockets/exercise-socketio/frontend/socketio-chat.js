@@ -10,6 +10,22 @@ let allChat = [];
  * Code goes here
  *
  */
+const socket = io("http://localhost:8080");
+
+socket.on("connect", () => {
+  console.log("connected");
+  presence.innerText = "🟢";
+});
+
+socket.on("disconnect", () => {
+  console.log("disconnected");
+  presence.innerText = "🔴";
+});
+
+socket.on("msg:get", (data) => {
+  allChat = data.msg;
+  render();
+});
 
 chat.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -18,11 +34,7 @@ chat.addEventListener("submit", function (e) {
 });
 
 async function postNewMsg(user, text) {
-  /*
-   *
-   * Code goes here
-   *
-   */
+  socket.emit("msg:post", { user, text });
 }
 
 function render() {
